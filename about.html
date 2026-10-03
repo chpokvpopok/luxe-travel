@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>О компании и отзывы — Luxe Travel</title>
+<meta name="description" content="Турагентство Luxe Travel в Караганде: кто мы, как работаем и что говорят туристы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="about">
+
+<main>
+  <section class="dark">
+    <div class="wrap page-head">
+      <div class="crumbs"><a href="index.html">Главная</a> / О нас</div>
+      <h1>Luxe Travel</h1>
+      <p class="lead">Турагентство в Караганде. Подбираем только качественные туры, поддерживаем на отдыхе 24/7. Нам доверяют туристы со всего Казахстана.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <div class="kicker">Кто мы</div>
+        <h2 class="h2" style="margin-bottom:20px">Отдых, за который не стыдно рекомендовать</h2>
+        <!-- Замените текст на настоящую историю агентства: год основания, сколько туристов отправили, имена менеджеров. -->
+        <p class="lead">[История агентства: когда открылись, сколько туристов уже отправили, чем гордитесь.]</p>
+        <p class="lead">Мы работаем с крупными туроператорами и сравниваем цены у нескольких из них, чтобы вы не переплачивали. Обзоры отелей — Rixos Sungate, Mirage Park, Nirvana, JW Marriott и New World на Фукуоке, отелей Хайнаня — выкладываем в Instagram.</p>
+      </div>
+      <div>
+        <div class="kicker">Наши принципы</div>
+        <ul class="ticks" style="margin-top:20px">
+          <li>Честно говорим о минусах отеля, а не только о плюсах</li>
+          <li>Показываем несколько вариантов, а не один «самый выгодный»</li>
+          <li>Работаем по договору, все документы — до вылета</li>
+          <li>Поддерживаем на отдыхе 24/7</li>
+          <li>Рассказываем об акциях, как только они появляются</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <!-- Добавьте фото и имена менеджеров, если хотите. -->
+      <div class="kicker">Команда</div>
+      <h2 class="h2" style="margin-bottom:32px">С вами будут на связи</h2>
+      <div class="grid">
+        <div class="service"><h3>[Имя менеджера]</h3><p>[Должность, любимые направления]</p></div>
+        <div class="service"><h3>[Имя менеджера]</h3><p>[Должность, любимые направления]</p></div>
+        <div class="service"><h3>[Имя менеджера]</h3><p>[Должность, любимые направления]</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="kicker">Отзывы</div>
+          <h2 class="h2">Что говорят туристы</h2>
+        </div>
+        <a class="more" href="https://www.instagram.com/luxe_travel_agency" target="_blank" rel="noopener">Больше отзывов в Instagram</a>
+      </div>
+      <div class="grid" id="reviews-list"></div>
+    </div>
+  </section>
+
+  <div data-pick-block></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  function initPage() {
+    renderReviews(document.getElementById('reviews-list'), REVIEWS);
+  }
+</script>
+</body>
+</html>

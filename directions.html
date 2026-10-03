@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Направления — Luxe Travel</title>
+<meta name="description" content="Куда поехать зимой и летом: Вьетнам, Хайнань, Таиланд, Оман, Мальдивы, Бали, Турция, Черногория, Грузия и другие страны.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="directions">
+
+<main>
+  <section class="dark">
+    <div class="wrap page-head">
+      <div class="crumbs"><a href="index.html">Главная</a> / Направления</div>
+      <h1>Куда поехать</h1>
+      <p class="lead">Страны, куда мы отправляем туристов из Казахстана. Выберите сезон — покажем, где сейчас лучше всего.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2">Все направления</h2>
+        <div class="chips" id="fSeason" role="group" aria-label="Сезон">
+          <button type="button" class="chip" data-value="all" aria-pressed="true">Все</button>
+          <button type="button" class="chip" data-value="winter" aria-pressed="false">Октябрь–март</button>
+          <button type="button" class="chip" data-value="summer" aria-pressed="false">Лето</button>
+        </div>
+      </div>
+      <div class="dirs" id="dirs"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2 class="h2">Как выбрать направление</h2>
+      <div class="why">
+        <div><h3>С маленькими детьми</h3><p>Турция летом, Вьетнам и Хайнань зимой: перелёт до 8 часов, отели с аквапарками и детскими клубами.</p></div>
+        <div><h3>Медовый месяц</h3><p>Мальдивы, Бали и Оман: виллы с бассейном, ужины на пляже и спокойные отели без шума.</p></div>
+        <div><h3>Недорого и тепло</h3><p>Гоа, Вьетнам и Таиланд: хорошие отели за разумные деньги и тёплое море с ноября по март.</p></div>
+        <div><h3>На выходные</h3><p>Грузия: перелёт 3–4 часа, вылеты из Актау, Астаны и Алматы, вино и кухня.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div data-pick-block></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  function initPage() {
+    const box = document.getElementById('dirs');
+    const update = (season) => renderDirections(box, DIRECTIONS.filter((d) =>
+      season === 'all' || d.s === season || d.s === 'both'));
+    bindChips(document.getElementById('fSeason'), update);
+    update('all');
+  }
+</script>
+</body>
+</html>

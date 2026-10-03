@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отели — Luxe Travel</title>
+<meta name="description" content="Отели из обзоров Luxe Travel: Rixos Sungate, Mirage Park, Nirvana, JW Marriott Phu Quoc, New World Phu Quoc и отели Салалы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="hotels">
+
+<main>
+  <section class="dark">
+    <div class="wrap page-head">
+      <div class="crumbs"><a href="index.html">Главная</a> / Отели</div>
+      <h1>Отели, которые мы показываем</h1>
+      <p class="lead">Обзоры этих отелей — в закреплённых сторис нашего Instagram. Спросите цену на свои даты, и менеджер пришлёт варианты.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="filters">
+        <div>
+          <div class="label">Страна</div>
+          <div class="chips" id="fCountry" role="group" aria-label="Страна"></div>
+        </div>
+      </div>
+      <div class="grid" id="hotels"></div>
+    </div>
+  </section>
+
+  <section class="section-sm alt">
+    <div class="wrap cta">
+      <div>
+        <h2 class="h3" style="margin:0">Нужен другой отель?</h2>
+        <p>Назовите отель или свои пожелания — подберём варианты у туроператоров.</p>
+      </div>
+      <a class="btn btn-ink js-wa" href="#" data-text="Здравствуйте! Хочу подобрать отель.">Подобрать отель</a>
+    </div>
+  </section>
+
+  <div data-pick-block></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  function initPage() {
+    const box = document.getElementById('hotels');
+    const ids = [...new Set(HOTELS.map((h) => h.country))];
+    const f = document.getElementById('fCountry');
+    f.innerHTML = '<button type="button" class="chip" data-value="all" aria-pressed="true">Все</button>' +
+      ids.map((id) => '<button type="button" class="chip" data-value="' + id + '" aria-pressed="false">' + esc(dirById(id).name) + '</button>').join('');
+    const update = (c) => renderHotels(box, HOTELS.filter((h) => c === 'all' || h.country === c));
+    bindChips(f, update);
+    update('all');
+  }
+</script>
+</body>
+</html>

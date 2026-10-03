@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Направление — Luxe Travel</title>
+<meta name="description" content="Туры из Казахстана: курорты, сезон, перелёт, виза и актуальные предложения.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="directions">
+
+<main id="country"></main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  // Страница одной страны: country.html?id=vietnam (id — из DIRECTIONS в data.js)
+  function initPage() {
+    const main = document.getElementById('country');
+    const d = dirById(new URLSearchParams(location.search).get('id'));
+
+    if (!d) {
+      main.innerHTML =
+        '<section class="dark"><div class="wrap page-head">' +
+        '<div class="crumbs"><a href="index.html">Главная</a> / <a href="directions.html">Направления</a></div>' +
+        '<h1>Направление не найдено</h1><p class="lead">Возможно, ссылка устарела.</p>' +
+        '<div class="actions" style="margin-top:24px"><a class="btn btn-light" href="directions.html">Все направления</a></div>' +
+        '</div></section>';
+      return;
+    }
+
+    document.title = 'Туры: ' + d.name + ' из Казахстана — Luxe Travel';
+    document.querySelector('meta[name="description"]').content = 'Туры: ' + d.name + ' (' + d.places + ') с вылетом из Астаны, Алматы и Актау. ' + d.intro;
+
+    const offers = OFFERS.filter((o) => o.country === d.id);
+    const hotels = HOTELS.filter((h) => h.country === d.id);
+    const others = DIRECTIONS.filter((x) => x.id !== d.id && (x.s === d.s || x.s === 'both' || d.s === 'both')).slice(0, 4);
+    const ask = 'Здравствуйте! Хочу тур: ' + d.name + '. Подскажите варианты.';
+
+    main.innerHTML =
+      '<section class="dark" style="background:linear-gradient(160deg,' + d.bg + ' -40%, #11161A 65%)">' +
+        '<div class="wrap page-head country-hero">' +
+          '<div class="crumbs"><a href="index.html">Главная</a> / <a href="directions.html">Направления</a> / ' + esc(d.name) + '</div>' +
+          '<div class="kicker">' + esc(d.places) + '</div>' +
+          '<h1>' + esc(d.name) + '</h1>' +
+          '<p class="lead">' + esc(d.intro) + '</p>' +
+          '<div class="actions" style="margin-top:28px">' +
+            '<a class="btn btn-light js-wa" href="#" data-text="' + esc(ask) + '">Подобрать тур</a>' +
+            (offers.length ? '<a class="btn btn-ghost" href="#offers-block">Горящие туры (' + offers.length + ')</a>' : '') +
+          '</div>' +
+          '<div class="keyfacts">' +
+            '<div><small>Сезон</small><b>' + esc(d.season) + '</b></div>' +
+            '<div><small>Перелёт</small><b>' + esc(d.flight) + '</b></div>' +
+            '<div><small>Виза для граждан РК</small><b>' + esc(d.visa) + '</b></div>' +
+            '<div><small>Валюта</small><b>' + esc(d.currency) + '</b></div>' +
+            '<div><small>С детьми</small><b>' + (d.kids ? 'Отлично подходит' : 'Лучше со школьниками') + '</b></div>' +
+          '</div>' +
+        '</div>' +
+      '</section>' +
+
+      '<section class="section"><div class="wrap two-col">' +
+        '<div><div class="kicker">Где отдыхать</div><h2 class="h2" style="margin-bottom:28px">Курорты</h2><div class="resorts">' +
+          d.resorts.map((r) => '<div class="resort"><h3>' + esc(r.name) + '</h3><p>' + esc(r.text) + '</p></div>').join('') +
+        '</div></div>' +
+        '<div><div class="kicker">Почему стоит поехать</div><h2 class="h2" style="margin-bottom:28px">Главное</h2><ul class="ticks">' +
+          d.highlights.map((h) => '<li>' + esc(h) + '</li>').join('') +
+        '</ul>' +
+        '<p class="note">* Визовые правила и время перелёта ориентировочные и могут меняться. Актуальные условия уточняйте у менеджера перед покупкой тура.</p>' +
+        '</div>' +
+      '</div></section>' +
+
+      (offers.length
+        ? '<section class="section alt" id="offers-block"><div class="wrap"><div class="head"><div><div class="kicker">' + esc(d.name) + '</div><h2 class="h2">Горящие туры</h2></div><a class="more" href="tours.html">Все туры</a></div><div class="grid" id="offers"></div></div></section>'
+        : '<section class="section-sm alt"><div class="wrap cta"><div><h2 class="h3" style="margin:0">Сейчас нет горящих туров в эту страну</h2><p style="color:var(--body)">Напишите даты — подберём лучшие цены у туроператоров.</p></div><a class="btn btn-ink js-wa" href="#" data-text="' + esc(ask) + '">Узнать цены</a></div></section>') +
+
+      (hotels.length
+        ? '<section class="section"><div class="wrap"><div class="head"><div><div class="kicker">Из наших обзоров</div><h2 class="h2">Отели</h2></div><a class="more" href="hotels.html">Все отели</a></div><div class="grid" id="hotels"></div></div></section>'
+        : '') +
+
+      '<section class="section' + (hotels.length ? ' alt' : '') + '"><div class="wrap"><div class="head"><h2 class="h2">Похожие направления</h2><a class="more" href="directions.html">Все направления</a></div><div class="dirs" id="others"></div></div></section>' +
+      '<div data-pick-block data-dest="' + d.id + '"></div>';
+
+    if (offers.length) renderOffers(document.getElementById('offers'), offers);
+    if (hotels.length) renderHotels(document.getElementById('hotels'), hotels);
+    renderDirections(document.getElementById('others'), others);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Горящие туры из Казахстана — Luxe Travel</title>
+<meta name="description" content="Горящие туры с вылетом из Астаны и Алматы: Вьетнам, Таиланд, Оман и другие направления. Актуальные цены и бронирование в WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="tours">
+
+<main>
+  <section class="dark">
+    <div class="wrap page-head">
+      <div class="crumbs"><a href="index.html">Главная</a> / Горящие туры</div>
+      <h1>Горящие туры</h1>
+      <p class="lead">Свежие предложения туроператоров на ближайшие даты. Количество мест ограничено — уточняйте наличие у менеджера.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="filters">
+        <div>
+          <div class="label">Город вылета</div>
+          <div class="chips" id="fCity" role="group" aria-label="Город вылета">
+            <button type="button" class="chip" data-value="all" aria-pressed="true">Все</button>
+            <button type="button" class="chip" data-value="astana" aria-pressed="false">Астана</button>
+            <button type="button" class="chip" data-value="almaty" aria-pressed="false">Алматы</button>
+            <button type="button" class="chip" data-value="aktau" aria-pressed="false">Актау</button>
+          </div>
+        </div>
+        <div>
+          <div class="label">Страна</div>
+          <div class="chips" id="fCountry" role="group" aria-label="Страна"></div>
+        </div>
+      </div>
+      <div class="grid" id="offers"></div>
+      <p class="note">Цены указаны на момент публикации и зависят от даты и наличия мест. Точную стоимость менеджер пришлёт в WhatsApp.</p>
+    </div>
+  </section>
+
+  <section class="section-sm alt">
+    <div class="wrap cta">
+      <div>
+        <h2 class="h3" style="margin:0">Не нашли подходящий тур?</h2>
+        <p style="color:var(--body)">Горящие туры обновляются каждый день. Напишите даты и бюджет — пришлём свежие варианты.</p>
+      </div>
+      <a class="btn btn-ink js-wa" href="#" data-text="Здравствуйте! Пришлите, пожалуйста, свежие горящие туры.">Получить подборку</a>
+    </div>
+  </section>
+
+  <div data-pick-block></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  function initPage() {
+    const state = { city: 'all', country: 'all' };
+    const box = document.getElementById('offers');
+    const update = () => renderOffers(box, OFFERS.filter((o) =>
+      (state.city === 'all' || !o.city || o.city === state.city) &&
+      (state.country === 'all' || o.country === state.country)));
+
+    // Кнопки стран — только те, по которым есть туры
+    const ids = [...new Set(OFFERS.map((o) => o.country))];
+    const fCountry = document.getElementById('fCountry');
+    fCountry.innerHTML = '<button type="button" class="chip" data-value="all" aria-pressed="true">Все</button>' +
+      ids.map((id) => '<button type="button" class="chip" data-value="' + id + '" aria-pressed="false">' + esc(dirById(id) ? dirById(id).name : id) + '</button>').join('');
+
+    bindChips(document.getElementById('fCity'), (v) => { state.city = v; update(); });
+    bindChips(fCountry, (v) => { state.country = v; update(); });
+    update();
+  }
+</script>
+</body>
+</html>
