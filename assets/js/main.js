@@ -5,11 +5,12 @@ const waLink = (text) => 'https://wa.me/' + SITE.waPhone + '?text=' + encodeURIC
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const dirById = (id) => DIRECTIONS.find((d) => d.id === id);
 
+// main: true — пункт виден в шапке, остальные только в боковой панели
 const NAV = [
   { href: 'index.html',      page: 'home',       title: 'Главная' },
-  { href: 'tours.html',      page: 'tours',      title: 'Горящие туры' },
-  { href: 'directions.html', page: 'directions', title: 'Направления' },
-  { href: 'hotels.html',     page: 'hotels',     title: 'Отели' },
+  { href: 'tours.html',      page: 'tours',      title: 'Горящие туры', main: true },
+  { href: 'directions.html', page: 'directions', title: 'Направления',  main: true },
+  { href: 'hotels.html',     page: 'hotels',     title: 'Отели',        main: true },
   { href: 'services.html',   page: 'services',   title: 'Услуги' },
   { href: 'about.html',      page: 'about',      title: 'О нас' },
   { href: 'faq.html',        page: 'faq',        title: 'Вопросы' },
@@ -19,17 +20,34 @@ const NAV = [
 // ---------- Шапка и подвал ----------
 function renderLayout() {
   const current = document.body.dataset.page;
-  const links = NAV.map((n) =>
-    '<a href="' + n.href + '"' + (n.page === current ? ' aria-current="page"' : '') + '>' + n.title + '</a>'
-  ).join('');
+  const link = (n, cls) =>
+    '<a href="' + n.href + '"' + (cls ? ' class="' + cls + '"' : '') + (n.page === current ? ' aria-current="page"' : '') + '>' + n.title + '</a>';
+  const links = NAV.filter((n) => n.main).map((n) => link(n)).join('');
+  // В панели все разделы; главные скрыты на широком экране — они уже есть в шапке
+  const drawerLinks = NAV.map((n) => link(n, n.main ? 'is-main' : '')).join('');
 
   document.body.insertAdjacentHTML('afterbegin',
     '<header class="header"><div class="wrap">' +
       '<a href="index.html" class="logo" aria-label="Luxe Travel, на главную"><b>LUXE</b><span>TRAVEL</span></a>' +
-      '<nav class="nav" id="nav" aria-label="Разделы сайта">' + links + '</nav>' +
-      '<a class="btn btn-gold js-wa" data-text="Здравствуйте! Хочу подобрать тур." href="#">Написать в WhatsApp</a>' +
-      '<button type="button" class="burger" aria-expanded="false" aria-controls="nav">Меню</button>' +
-    '</div></header>');
+      '<nav class="nav" aria-label="Основные разделы">' + links + '</nav>' +
+      '<div class="header-actions">' +
+        '<a class="btn btn-gold js-wa" data-text="Здравствуйте! Хочу подобрать тур." href="#">Написать в WhatsApp</a>' +
+        '<button type="button" class="burger" aria-expanded="false" aria-controls="drawer">' +
+          '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg>Меню</button>' +
+      '</div>' +
+    '</div></header>' +
+    '<div class="drawer-backdrop" hidden></div>' +
+    '<aside class="drawer" id="drawer" aria-label="Меню" aria-hidden="true" inert>' +
+      '<div class="drawer-head"><span class="logo"><b>LUXE</b><span>TRAVEL</span></span>' +
+        '<button type="button" class="drawer-close" aria-label="Закрыть меню">' +
+          '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button></div>' +
+      '<nav class="drawer-nav" aria-label="Все разделы">' + drawerLinks + '</nav>' +
+      '<div class="drawer-contacts">' +
+        SITE.phones.map((p) => '<a href="' + p.href + '">' + esc(p.text) + '</a>').join('') +
+        '<div class="dim">' + esc(SITE.hours) + '</div>' +
+        '<a class="btn btn-gold js-wa" data-text="Здравствуйте! Хочу подобрать тур." href="#">Написать в WhatsApp</a>' +
+      '</div>' +
+    '</aside>');
 
   const dirLinks = DIRECTIONS.slice(0, 6).map((d) => '<a href="country.html?id=' + d.id + '">' + esc(d.name) + '</a>').join('');
   document.body.insertAdjacentHTML('beforeend',
@@ -47,12 +65,22 @@ function renderLayout() {
     '<a class="btn btn-gold wa-float js-wa" href="#" data-text="Здравствуйте! Хочу подобрать тур.">WhatsApp</a>');
 
   const burger = document.querySelector('.burger');
-  const nav = document.getElementById('nav');
-  burger.addEventListener('click', () => {
-    const open = nav.classList.toggle('open');
+  const drawer = document.getElementById('drawer');
+  const backdrop = document.querySelector('.drawer-backdrop');
+  const closeBtn = drawer.querySelector('.drawer-close');
+  const setDrawer = (open) => {
+    drawer.classList.toggle('open', open);
+    drawer.toggleAttribute('inert', !open);
+    drawer.setAttribute('aria-hidden', String(!open));
     burger.setAttribute('aria-expanded', String(open));
-    burger.textContent = open ? 'Закрыть' : 'Меню';
-  });
+    document.body.classList.toggle('drawer-open', open);
+    if (open) { backdrop.hidden = false; requestAnimationFrame(() => backdrop.classList.add('open')); closeBtn.focus(); }
+    else { backdrop.classList.remove('open'); setTimeout(() => { backdrop.hidden = true; }, 250); burger.focus(); }
+  };
+  burger.addEventListener('click', () => setDrawer(true));
+  closeBtn.addEventListener('click', () => setDrawer(false));
+  backdrop.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && drawer.classList.contains('open')) setDrawer(false); });
 }
 
 // ---------- Карточки ----------
